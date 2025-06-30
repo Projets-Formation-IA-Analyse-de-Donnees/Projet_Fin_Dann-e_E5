@@ -1,14 +1,6 @@
-# docker-compose.yml
 version: '3'
 
 services:
-  streamlit:
-    build: .
-    container_name: streamlit_app
-    ports:
-      - "8501:8501"
-      - "8000:8000"
-
   prometheus:
     image: prom/prometheus:latest
     volumes:
@@ -17,8 +9,16 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - "9090:9090"
+    networks:
+      - backend_net
 
   grafana:
     image: grafana/grafana:latest
     ports:
       - "3001:3000"
+    networks:
+      - backend_net
+
+networks:
+  backend_net:
+    external: true
