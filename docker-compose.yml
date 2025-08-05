@@ -4,9 +4,11 @@ services:
   prometheus:
     image: prom/prometheus:latest
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_config:/etc/prometheus
+      - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
     ports:
       - "9090:9090"
     networks:
@@ -16,9 +18,38 @@ services:
     image: grafana/grafana:latest
     ports:
       - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana 
+    networks:
+      - backend_net
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki_config:/etc/loki
+      - loki_data:/tmp/loki
+    command: -config.file=/etc/loki/loki-config.yml
+    networks:
+      - backend_net
+
+  promtail:
+    image: grafana/promtail:latest
+    volumes:
+      - ./promtail_config:/etc/promtail
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - django_logs:/var/log/django:ro
+    command: -config.file=/etc/promtail/promtail-config.yml
     networks:
       - backend_net
 
 networks:
   backend_net:
     external: true
+
+volumes: 
+  prometheus_data:
+  loki_data:
+  grafana_data:
+  django_logs:
