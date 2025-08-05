@@ -65,4 +65,4 @@ up{job="django"} == 0
 ## Configuration de la gestion du "No Data"
 Pour éviter les faux positifs dus à des absences temporaires de données, toutes les alertes sont configurées avec l'option "No Data". Cela garantit que l'alerte ne se déclanche que lorsque des données apparaissent.
 
-Tu peux maintenant consulter la liste des alertes configurée dans le fichier suivant : [Voir la documentation des alertes](alertes.md)
+Tu peux maintenant consulter le dashboard configurée dans le fichier suivant : [Voir la documentation du dashboard](dashboard.md)
