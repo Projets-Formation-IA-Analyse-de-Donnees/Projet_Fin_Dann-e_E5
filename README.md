@@ -22,7 +22,7 @@ Le système de monitorage est construit autour de plusieurs services :
 - [Lancement du projet](docs/setup.md)
 - [Orchestration](docs/orchestration.md)
 - [Alertes](docs/alertes.md)
-- [Alertes](docs/alertes.md)
+- [Dashboard](docs/dashboard.md)
 
 
 

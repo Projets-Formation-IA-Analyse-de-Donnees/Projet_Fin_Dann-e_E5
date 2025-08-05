@@ -1,7 +1,7 @@
 # Règles d'Alertes Grafana
 Ce document détaille les règles d'alertes configurées dans Grafana pour le monitorage de l'application Django. Ces alertes sont essentielles pour la détection proactive des incidents et sont acheminées vers un canal Discord.
 
-Les alertes sont organisées dans le dossier Grafana : Alertes Django_app.
+![Graphique](img\alertes_all.png)
 
 ## Alerte : Erreurs serveur (5xx)
 - Objectif : Notifier immédiatement toute erreur interne du serveur.
@@ -40,13 +40,13 @@ histogram_quantile(0.95, rate(django_http_requests_latency_including_middlewares
 
 -  Requête PromQL :
 ```bash
-sum(rate(django_http_responses_total_by_status_total{status=~"4..",job="django"}[5m])) > 5
+sum(rate(django_http_responses_total_by_status_total{status=~"4.."}[1m])) > 0
 ```
 
 
--  Condition : est supérieure à 5 pendant 5 minutes.
+-  Condition : est supérieure à 0 pendant 1 minutes.
 
--  Justification : Un taux élevé peut indiquer des liens brisés, des tentatives d'accès non autorisées ou des problèmes de configuration côté client.
+-  Justification : Un taux d'erreurs 4xx supérieur à zéro peut indiquer des liens brisés, des tentatives d'accès non autorisées ou des problèmes de configuration côté client.
 
 ## Alerte : Aucune donnée Prometheus (Panne de service)
 -  Objectif : Alerter si Prometheus ne parvient plus à collecter les métriques de l'application Django, indiquant une potentielle panne du service.
@@ -55,7 +55,7 @@ sum(rate(django_http_responses_total_by_status_total{status=~"4..",job="django"}
 
 -  Requête PromQL :
 ```bash
-up{job="django"} == 0
+up{job="django"} == 0 
 ```
 
 -  Condition : est égale à 0 pendant 5 minutes.
@@ -65,4 +65,9 @@ up{job="django"} == 0
 ## Configuration de la gestion du "No Data"
 Pour éviter les faux positifs dus à des absences temporaires de données, toutes les alertes sont configurées avec l'option "No Data". Cela garantit que l'alerte ne se déclanche que lorsque des données apparaissent.
 
-Tu peux maintenant consulter le dashboard configurée dans le fichier suivant : [Voir la documentation du dashboard](dashboard.md)
+## Configuration des notifications
+Pour recevoir les notifications d'alerte, Grafana utilise des points de contact qui définissent où et comment les alertes doivent être envoyées. Pour ce projet, plusieurs webhook Discord ont été configurés comme point de contact. Cela permet de centraliser les alertes directement dans un serveur Discord dédié (répartissant les mesages dans plusieurs canaux spécialisés), offrant une visibilité immédiate du problème. La création d'un webhook Discord est une étape simple dans les paramètres du serveur Discord, fournissant une URL unique que Grafana utilise pour envoyer les messages d'une alerte.
+
+
+
+Tu peux maintenant consulter le dashboard configurée avec Graphana dans le fichier suivant : [Voir la documentation du Dashboard](dashboard.md)
