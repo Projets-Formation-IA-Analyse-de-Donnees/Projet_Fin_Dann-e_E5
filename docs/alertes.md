@@ -10,28 +10,13 @@ Ce document détaille les règles d'alertes configurées dans Grafana pour le mo
 
 - Requête PromQL :
 ```bash
-sum(rate(django_http_responses_total_by_status_total{status=~"5..",job="django"}[1m])) > 0
+sum(rate(django_http_responses_total_by_status_total{status=~" 50. ",job="django"}[1m])) > 0
 ```
 
 
 -  Condition : est supérieure à 0 pendant 1 minute.
 
 -  Justification : Un taux d'erreurs 5xx supérieur à zéro indique un dysfonctionnement critique de l'application.
-
-## Alerte : Latence élevée
--  Objectif : Prévenir si le temps de réponse de l'application dépasse un seuil acceptable.
-
--  Source de données : Prometheus
-
--  Requête PromQL :
-```bash
-histogram_quantile(0.95, rate(django_http_requests_latency_including_middlewares_seconds_bucket{job="django"}[5m])) > 2
-```
-
-
--  Condition : est supérieure à 2 pendant 5 minutes.
-
--  Justification : Un 95e centile de latence supérieur à 2 secondes dégrade significativement l'expérience utilisateur.
 
 ## Alerte : Erreurs client (4xx)
 -  Objectif : Signaler un nombre anormalement élevé de requêtes client invalides ou de ressources non trouvées.
@@ -40,13 +25,30 @@ histogram_quantile(0.95, rate(django_http_requests_latency_including_middlewares
 
 -  Requête PromQL :
 ```bash
-sum(rate(django_http_responses_total_by_status_total{status=~"4.."}[1m])) > 0
+sum(rate(django_http_responses_total_by_status_total{status=~" 40. "}[1m])) > 0
 ```
 
 
 -  Condition : est supérieure à 0 pendant 1 minutes.
 
 -  Justification : Un taux d'erreurs 4xx supérieur à zéro peut indiquer des liens brisés, des tentatives d'accès non autorisées ou des problèmes de configuration côté client.
+
+## Alerte : Latence élevée
+-  Objectif : Prévenir si le temps de réponse de l'application dépasse un seuil acceptable.
+
+-  Source de données : Prometheus
+
+-  Requête PromQL :
+```bash
+histogram_quantile(0.95, rate(django_http_requests_latency_including_middlewares_seconds_bucket{job="django"}[1m])) > 2
+```
+
+
+-  Condition : est supérieure à 2 pendant 1 minutes.
+
+-  Justification : Un 95e centile de latence supérieur à 2 secondes dégrade significativement l'expérience utilisateur.
+
+
 
 ## Alerte : Aucune donnée Prometheus (Panne de service)
 -  Objectif : Alerter si Prometheus ne parvient plus à collecter les métriques de l'application Django, indiquant une potentielle panne du service.
@@ -58,7 +60,7 @@ sum(rate(django_http_responses_total_by_status_total{status=~"4.."}[1m])) > 0
 up{job="django"} == 0 
 ```
 
--  Condition : est égale à 0 pendant 5 minutes.
+-  Condition : est égale à 0.
 
 -  Justification : La métrique up à 0 signifie que le service est inaccessible, signalant une panne critique.
 

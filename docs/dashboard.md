@@ -16,7 +16,7 @@ Description : Affiche le 95e centile du temps de réponse des requêtes. C'est u
 
  
 ```promql
-rate(django_http_requests_latency_including_middlewares_seconds_sum[5m]) / rate(django_http_requests_latency_including_middlewares_seconds_count[5m])
+rate(django_http_requests_latency_including_middlewares_seconds_sum[1m]) / rate(django_http_requests_latency_including_middlewares_seconds_count[1m])
 ```
 
 
@@ -90,6 +90,9 @@ Description : Affiche les logs bruts de l'application Django en temps réel, ess
 
 
 ![Graphique](img\logs.png)
+
+
+Description : Compte le nombre de logs Django
 
 ![Graphique](img\nb_logs.png)
 
